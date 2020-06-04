@@ -1,5 +1,8 @@
 <template>
-	<div class="home">Home</div>
+	<div class="home">
+        <div class="home__menu"></div>
+        <div class="home__content"></div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -11,6 +14,12 @@ export default class Home extends Vue {}
 
 <style lang="scss" scoped>
 .home {
-	color: $primary-color;
+    display: flex;
+    .home__menu{
+
+    }
+    .home__content{
+        
+    }
 }
 </style>
