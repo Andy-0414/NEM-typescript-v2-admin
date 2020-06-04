@@ -3,22 +3,8 @@
 		<form action="javascript:void(0);" @submit="login" class="login__box">
 			<h1>NEM-TYPESCRIPT-V2</h1>
 			<p>Admin Console</p>
-			<input
-				v-model="userID"
-				class="id"
-				type="text"
-				name="userID"
-				autocomplete="email"
-				placeholder="ID"
-			/>
-			<input
-				v-model="password"
-				class="password"
-				type="password"
-				name="password"
-				autocomplete="current-password"
-				placeholder="PASSWORD"
-			/>
+			<input v-model="userID" class="id" type="text" name="userID" autocomplete="email" placeholder="ID" />
+			<input v-model="password" class="password" type="password" name="password" autocomplete="current-password" placeholder="PASSWORD" />
 			<button type="submit">LOGIN</button>
 		</form>
 	</div>
@@ -35,11 +21,12 @@ export default class Login extends Vue {
 		try {
 			this.$store.commit("addTask", "LOGIN_DATA");
 			let user = await this.$store.dispatch("LOGIN_DATA");
-			this.$store.commit("clearTask", "LOGIN_DATA");
+
 			if (user) {
 				this.$router.replace("/");
 			}
 		} catch (err) {}
+		this.$store.commit("clearTask", "LOGIN_DATA");
 	}
 	async login() {
 		if (this.$store.state.loginType) {
@@ -47,14 +34,12 @@ export default class Login extends Vue {
 				this.$store.commit("addTask", "LOGIN");
 				let result = await this.$store.dispatch("LOGIN", {
 					userID: this.userID,
-					password: this.password
+					password: this.password,
 				});
-				this.$store.commit("clearTask", "LOGIN");
 
 				if (result) {
 					this.$store.commit("addTask", "LOGIN_DATA");
 					let user = await this.$store.dispatch("LOGIN_DATA");
-					this.$store.commit("clearTask", "LOGIN_DATA");
 
 					if (user.isAdmin) {
 						this.$router.replace("/");
@@ -65,6 +50,8 @@ export default class Login extends Vue {
 			} catch (err) {
 				alert(err.message);
 			}
+			this.$store.commit("clearTask", "LOGIN");
+			this.$store.commit("clearTask", "LOGIN_DATA");
 		}
 	}
 }
