@@ -13,6 +13,11 @@ import { Vue, Component } from "vue-property-decorator";
 @Component
 export default class App extends Vue {
 	async created() {
+		this.$router.beforeEach((to, from, next) => {
+			this.$store.state.task = [];
+			next();
+		});
+
 		this.$store.commit("addTask", "GET_LOGIN_TYPE");
 		await this.$store.dispatch("GET_LOGIN_TYPE");
 		this.$store.commit("clearTask", "GET_LOGIN_TYPE");
