@@ -18,10 +18,14 @@
 			</div>
 			<ul class="database__data__list">
 				<li class="database__data__list__item" v-for="data in selectedDataset" :key="data._id">
-					<p v-for="key in getSelectedSchemaShape" :key="key">
+					<p v-for="key in getSelectedSchemaShape" :key="key.name">
 						<span class="keyname">{{key.name}} :</span>
 						<span class="valeue">{{data[key.name]}}</span>
 					</p>
+					<div class="database__data__list__item__actions">
+						<button>DELETE</button>
+						<button>UPDATE</button>
+					</div>
 				</li>
 			</ul>
 		</div>
@@ -113,6 +117,13 @@ export default class Database extends Vue {
 					display: inline-block;
 					font-size: 1.2em;
 					margin-left: 10px;
+				}
+				.database__data__list__item__actions {
+					display: flex;
+					justify-content: flex-end;
+					button {
+						margin-left: 10px;
+					}
 				}
 			}
 		}

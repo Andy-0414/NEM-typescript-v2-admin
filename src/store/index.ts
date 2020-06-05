@@ -57,7 +57,6 @@ const store = new Vuex.Store({
 			let response = await (await axios.get(`/admin/get-schema-shape`)).data;
 			let shape = response.data;
 			if (response.result) {
-				console.log(shape);
 				return shape;
 			} else {
 				throw new Error("DB 가져오기 실패");
