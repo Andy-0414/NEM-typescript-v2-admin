@@ -1,12 +1,7 @@
 <template>
 	<div class="database">
 		<ul class="database__schemalist">
-			<li
-				class="database__schemalist__item"
-				v-for="schemaShape in schemaShapeList"
-				:key="schemaShape.schemaName"
-				@click="selectSchema(schemaShape.schemaName)"
-			>
+			<li class="database__schemalist__item" v-for="schemaShape in schemaShapeList" :key="schemaShape.schemaName" @click="selectSchema(schemaShape.schemaName)">
 				<i class="material-icons">layers</i>
 				{{ schemaShape.schemaName }}
 			</li>
@@ -19,8 +14,8 @@
 			<ul class="database__data__list">
 				<li class="database__data__list__item" v-for="data in selectedDataset" :key="data._id">
 					<p v-for="key in getSelectedSchemaShape" :key="key.name">
-						<span class="keyname">{{key.name}} :</span>
-						<span class="valeue">{{data[key.name]}}</span>
+						<span class="keyname">{{ key.name }} :</span>
+						<span class="valeue">{{ data[key.name] }}</span>
 					</p>
 					<div class="database__data__list__item__actions">
 						<button>DELETE</button>
@@ -44,12 +39,11 @@ export default class Database extends Vue {
 		this.$store.commit("addTask", "GET_SCHEMA_SHAPE");
 		this.schemaShapeList = await this.$store.dispatch("GET_SCHEMA_SHAPE");
 		this.$store.commit("clearTask", "GET_SCHEMA_SHAPE");
+		this.selectSchema(this.schemaShapeList[0].schemaName);
 	}
 	get getSelectedSchemaShape(): any[] {
 		if (this.selectedSchemaName) {
-			let schemaShape = this.schemaShapeList.find(
-				schemaShape => schemaShape.schemaName == this.selectedSchemaName
-			);
+			let schemaShape = this.schemaShapeList.find((schemaShape) => schemaShape.schemaName == this.selectedSchemaName);
 			if (schemaShape) return schemaShape.schemaShape;
 		}
 		return [];
@@ -58,12 +52,9 @@ export default class Database extends Vue {
 		this.selectedSchemaName = name;
 		try {
 			this.$store.commit("addTask", "GET_SCHEMA_DATASET");
-			this.selectedDataset = await this.$store.dispatch(
-				"GET_SCHEMA_DATASET",
-				{
-					schemaName: name
-				}
-			);
+			this.selectedDataset = await this.$store.dispatch("GET_SCHEMA_DATASET", {
+				schemaName: name,
+			});
 		} catch (err) {
 			alert(err.message);
 		}
