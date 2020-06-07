@@ -8,18 +8,19 @@
 		</ul>
 		<div class="database__data">
 			<div class="database__data__actions">
-				<button>CREATE</button>
-				<button>REFRESH</button>
+				<button @click="createData">CREATE</button>
+				<button @click="refreshData">REFRESH</button>
 			</div>
 			<ul class="database__data__list">
-				<li class="database__data__list__item" v-for="data in selectedDataset" :key="data._id">
+				<li class="database__data__list__item" :class="{ created: !data._id }" v-for="data in selectedDataset" :key="data._id">
 					<p v-for="key in getSelectedSchemaShape" :key="key.name">
 						<span class="keyname">{{ key.name }} :</span>
-						<span class="valeue">{{ data[key.name] }}</span>
+						<input class="value" v-model="data[key.name]" />
 					</p>
 					<div class="database__data__list__item__actions">
-						<button>DELETE</button>
-						<button>UPDATE</button>
+						<button @click="deleteData(data)" v-if="data._id">DELETE</button>
+						<button @click="updateData(data)" v-if="data._id">UPDATE</button>
+						<button @click="saveData(data)" v-if="!data._id">CREATE</button>
 					</div>
 				</li>
 			</ul>
@@ -35,6 +36,8 @@ export default class Database extends Vue {
 	schemaShapeList: any[] = [];
 	selectedSchemaName: string = "";
 	selectedDataset: any[] = [];
+	isCreateAble: boolean = true;
+
 	async created() {
 		this.$store.commit("addTask", "GET_SCHEMA_SHAPE");
 		this.schemaShapeList = await this.$store.dispatch("GET_SCHEMA_SHAPE");
@@ -60,6 +63,31 @@ export default class Database extends Vue {
 		}
 		this.$store.commit("clearTask", "GET_SCHEMA_DATASET");
 	}
+
+	createData() {
+		if (this.isCreateAble) {
+			let data: any = {};
+			this.schemaShapeList
+				.map((x) => x.name)
+				.forEach((key) => {
+					data[key] = null;
+				});
+			this.selectedDataset.unshift(data);
+			this.isCreateAble = false;
+		}
+	}
+	async saveData(data: any) {
+		await this.$store.dispatch("CREATE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+	}
+	refreshData() {
+		this.selectSchema(this.selectedSchemaName);
+	}
+	async updateData(data: any) {
+		await this.$store.dispatch("UPDATE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+	}
+	async deleteData(data: any) {
+		await this.$store.dispatch("DELETE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+	}
 }
 </script>
 
@@ -82,7 +110,8 @@ export default class Database extends Vue {
 	}
 	.database__data {
 		flex: 1;
-
+		height: 100%;
+		overflow-y: auto;
 		.database__data__actions {
 			margin: 20px;
 			display: flex;
@@ -98,16 +127,31 @@ export default class Database extends Vue {
 				margin: 20px;
 				border-radius: 10px;
 				box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+				p {
+					display: flex;
+					align-items: center;
+					padding: 5px 0;
+					.keyname {
+						user-select: none;
+						display: inline-block;
+						font-size: 1.2em;
+						font-weight: bold;
+					}
+					.value {
+						flex: 1;
+						display: inline-block;
+						font-size: 1.2em;
+						margin-left: 10px;
 
-				.keyname {
-					display: inline-block;
-					font-size: 1.2em;
-					font-weight: bold;
-				}
-				.value {
-					display: inline-block;
-					font-size: 1.2em;
-					margin-left: 10px;
+						padding: 5px;
+						border: none;
+
+						background: none;
+
+						&:focus {
+							box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+						}
+					}
 				}
 				.database__data__list__item__actions {
 					display: flex;
@@ -115,6 +159,9 @@ export default class Database extends Vue {
 					button {
 						margin-left: 10px;
 					}
+				}
+				&.created {
+					background-color: #eeffee;
 				}
 			}
 		}

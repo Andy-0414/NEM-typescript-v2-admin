@@ -62,8 +62,35 @@ const store = new Vuex.Store({
 				throw new Error("DB 가져오기 실패");
 			}
 		},
+		async CREATE_SCHEMA_DATASET({ commit, state }, data): Promise<any> {
+			let response = await (await axios.post(`/admin/create-schema-dataset`, data)).data;
+			let dataset = response.data;
+			if (response.result) {
+				return dataset;
+			} else {
+				throw new Error("DB 가져오기 실패");
+			}
+		},
 		async GET_SCHEMA_DATASET({ commit, state }, data): Promise<any> {
 			let response = await (await axios.post(`/admin/get-schema-dataset`, data)).data;
+			let dataset = response.data;
+			if (response.result) {
+				return dataset;
+			} else {
+				throw new Error("DB 가져오기 실패");
+			}
+		},
+		async UPDATE_SCHEMA_DATASET({ commit, state }, data): Promise<any> {
+			let response = await (await axios.post(`/admin/update-schema-dataset`, data)).data;
+			let dataset = response.data;
+			if (response.result) {
+				return dataset;
+			} else {
+				throw new Error("DB 가져오기 실패");
+			}
+		},
+		async DELETE_SCHEMA_DATASET({ commit, state }, data): Promise<any> {
+			let response = await (await axios.post(`/admin/delete-schema-dataset`, data)).data;
 			let dataset = response.data;
 			if (response.result) {
 				return dataset;

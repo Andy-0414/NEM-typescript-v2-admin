@@ -48,7 +48,7 @@ export default class Login extends Vue {
 					}
 				}
 			} catch (err) {
-				alert(err.message);
+				alert(err.response.data.message);
 			}
 			this.$store.commit("clearTask", "LOGIN");
 			this.$store.commit("clearTask", "LOGIN_DATA");
