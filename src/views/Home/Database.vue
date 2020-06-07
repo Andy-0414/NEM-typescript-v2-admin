@@ -1,7 +1,12 @@
 <template>
 	<div class="database">
 		<ul class="database__schemalist">
-			<li class="database__schemalist__item" v-for="schemaShape in schemaShapeList" :key="schemaShape.schemaName" @click="selectSchema(schemaShape.schemaName)">
+			<li
+				class="database__schemalist__item"
+				v-for="schemaShape in schemaShapeList"
+				:key="schemaShape.schemaName"
+				@click="selectSchema(schemaShape.schemaName)"
+			>
 				<i class="material-icons">layers</i>
 				{{ schemaShape.schemaName }}
 			</li>
@@ -12,7 +17,12 @@
 				<button @click="refreshData">REFRESH</button>
 			</div>
 			<ul class="database__data__list">
-				<li class="database__data__list__item" :class="{ created: !data._id }" v-for="data in selectedDataset" :key="data._id">
+				<li
+					class="database__data__list__item"
+					:class="{ created: !data._id }"
+					v-for="data in selectedDataset"
+					:key="data._id"
+				>
 					<p v-for="key in getSelectedSchemaShape" :key="key.name">
 						<span class="keyname">{{ key.name }} :</span>
 						<input class="value" v-model="data[key.name]" />
@@ -46,7 +56,9 @@ export default class Database extends Vue {
 	}
 	get getSelectedSchemaShape(): any[] {
 		if (this.selectedSchemaName) {
-			let schemaShape = this.schemaShapeList.find((schemaShape) => schemaShape.schemaName == this.selectedSchemaName);
+			let schemaShape = this.schemaShapeList.find(
+				schemaShape => schemaShape.schemaName == this.selectedSchemaName
+			);
 			if (schemaShape) return schemaShape.schemaShape;
 		}
 		return [];
@@ -55,9 +67,12 @@ export default class Database extends Vue {
 		this.selectedSchemaName = name;
 		try {
 			this.$store.commit("addTask", "GET_SCHEMA_DATASET");
-			this.selectedDataset = await this.$store.dispatch("GET_SCHEMA_DATASET", {
-				schemaName: name,
-			});
+			this.selectedDataset = await this.$store.dispatch(
+				"GET_SCHEMA_DATASET",
+				{
+					schemaName: name
+				}
+			);
 		} catch (err) {
 			alert(err.message);
 		}
@@ -68,8 +83,8 @@ export default class Database extends Vue {
 		if (this.isCreateAble) {
 			let data: any = {};
 			this.schemaShapeList
-				.map((x) => x.name)
-				.forEach((key) => {
+				.map(x => x.name)
+				.forEach(key => {
 					data[key] = null;
 				});
 			this.selectedDataset.unshift(data);
@@ -77,16 +92,35 @@ export default class Database extends Vue {
 		}
 	}
 	async saveData(data: any) {
-		await this.$store.dispatch("CREATE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+		this.$store.commit("addTask", "CREATE_SCHEMA_DATASET");
+		await this.$store.dispatch("CREATE_SCHEMA_DATASET", {
+			schemaName: this.selectedSchemaName,
+			data
+		});
+		await this.refreshData();
+		this.$store.commit("clearTask", "CREATE_SCHEMA_DATASET");
 	}
-	refreshData() {
-		this.selectSchema(this.selectedSchemaName);
+	async refreshData() {
+		await this.selectSchema(this.selectedSchemaName);
 	}
 	async updateData(data: any) {
-		await this.$store.dispatch("UPDATE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+		this.$store.commit("addTask", "UPDATE_SCHEMA_DATASET");
+
+		await this.$store.dispatch("UPDATE_SCHEMA_DATASET", {
+			schemaName: this.selectedSchemaName,
+			data
+		});
+		this.$store.commit("clearTask", "UPDATE_SCHEMA_DATASET");
+		await this.refreshData();
 	}
 	async deleteData(data: any) {
-		await this.$store.dispatch("DELETE_SCHEMA_DATASET", { schemaName: this.selectedSchemaName, data });
+		this.$store.commit("addTask", "DELETE_SCHEMA_DATASET");
+		await this.$store.dispatch("DELETE_SCHEMA_DATASET", {
+			schemaName: this.selectedSchemaName,
+			data
+		});
+		this.$store.commit("clearTask", "DELETE_SCHEMA_DATASET");
+		await this.refreshData();
 	}
 }
 </script>
