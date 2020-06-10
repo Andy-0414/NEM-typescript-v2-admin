@@ -1,19 +1,5 @@
 # nem_typescript_v2_admin
 
-## Project setup
-```
-npm install
-```
+https://github.com/Andy-0414/NEM-typescript-v2
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+admin page
